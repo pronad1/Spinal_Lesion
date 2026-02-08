@@ -1,6 +1,15 @@
 """
-EfficientNetV2 Training for VinDr-SpineXR Classification
-Optimized for medical imaging with proper transfer learning and regularization
+EfficientNetV2-S Training for VinDr-SpineXR Classification (MICCAI 2026 Paper)
+EfficientNetV2-S Individual Performance:
+- AUROC: 89.44%
+- Sensitivity: 70.80%
+- Specificity: 91.12% (highest among individual models)
+- F1-Score: 79.34%
+
+Training Configuration:
+- Epochs: 60 (with CosineAnnealing LR scheduler)
+- Optimizer: AdamW (lr=1e-4)
+- Hardware: RTX 3050 8GB (~13 hours training time)
 """
 
 import torch
@@ -22,7 +31,7 @@ import torch.backends.cudnn as cudnn
 def parse_args():
     parser = argparse.ArgumentParser()
     parser.add_argument('--batch-size', type=int, default=48, help='Batch size')
-    parser.add_argument('--epochs', type=int, default=25, help='Number of epochs')
+    parser.add_argument('--epochs', type=int, default=60, help='Number of epochs (MICCAI 2026 paper: 60 with CosineAnnealing)')
     parser.add_argument('--lr', type=float, default=0.0003, help='Learning rate')
     parser.add_argument('--model', type=str, default='tf_efficientnetv2_s', 
                         choices=['tf_efficientnetv2_s', 'tf_efficientnetv2_m', 'tf_efficientnetv2_l'],

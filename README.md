@@ -253,21 +253,6 @@ For detailed mathematical formulations, see [`docs/methodology.md`](docs/methodo
 
 ---
 
-## 📚 Citation
-
-If you use this code in your research, please cite:
-
-```bibtex
-@inproceedings{vindr_spinexr_2026,
-  title={Automated Detection and Classification of Spinal Lesions using Multi-Model Ensemble},
-  author={Your Name},
-  booktitle={Medical Image Computing and Computer Assisted Intervention -- MICCAI 2026},
-  year={2026}
-}
-```
-
----
-
 ## 🔗 References
 
 1. **Dataset**: Nguyen et al., "VinDr-SpineXR: A Deep Learning Framework for Spinal Lesions Detection and Classification", 2021
@@ -286,17 +271,17 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 
 ## 👥 Authors
 
-**Your Name**  
-Institution Name  
-Email: your.email@example.com
+**Prosenjit Mondol**  
+Institution Name: Patuakhali Science & Technology University 
+Email: prosenjit1156@gmail.com
 
 ---
 
 ## 🙏 Acknowledgments
 
-- VinDr Consortium for providing the dataset
-- PyTorch and Ultralytics teams for excellent frameworks
-- MICCAI 2026 reviewers for their valuable feedback
+- VinDr Consortium for providing the VinDr-SpineXR dataset
+- PyTorch and Ultralytics teams for their excellent deep learning frameworks
+- PhysioNet for hosting and maintaining the dataset infrastructure
 
 ---
 
