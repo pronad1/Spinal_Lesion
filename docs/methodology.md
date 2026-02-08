@@ -1309,6 +1309,7 @@ Output: Classification predictions C, Detection predictions D
    - **No cherry-picking**: Report all results
    - **Blind evaluation**: Test labels hidden during prediction
 
+
 4. **Reproducibility Measures:**
    ```python
    # Fixed seeds across all libraries

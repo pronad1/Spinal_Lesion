@@ -272,8 +272,8 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 ## 👥 Authors
 
 **Prosenjit Mondol**  
-Institution Name: Patuakhali Science & Technology University 
-Email: prosenjit1156@gmail.com
+Patuakhali Science & Technology University  
+prosenjit1156@gmail.com
 
 ---
 

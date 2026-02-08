@@ -25,6 +25,7 @@ MANIFEST
 
 
 # Virtual Environment
+.venv/
 venv/
 env/
 ENV/
@@ -96,4 +97,4 @@ kaggle.json
 
 # Experimental outputs
 Model\ output/
-classification/
+# classification/  # REMOVED - This folder contains important training scripts!
