@@ -23,6 +23,7 @@ share/python-wheels/
 *.egg
 MANIFEST
 
+
 # Virtual Environment
 venv/
 env/
@@ -95,4 +96,4 @@ kaggle.json
 
 # Experimental outputs
 Model\ output/
-classificaition/
+classification/
