@@ -1,0 +1,796 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Spinal Injury Detection System</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 20px;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+            overflow: hidden;
+        }
+
+        .header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 40px 30px;
+            text-align: center;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .header::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            right: -10%;
+            width: 300px;
+            height: 300px;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 50%;
+            z-index: 0;
+        }
+
+        .header::after {
+            content: '';
+            position: absolute;
+            bottom: -30%;
+            left: -5%;
+            width: 200px;
+            height: 200px;
+            background: rgba(255, 255, 255, 0.08);
+            border-radius: 50%;
+            z-index: 0;
+        }
+
+        .header-content {
+            position: relative;
+            z-index: 1;
+        }
+
+        .header-icon {
+            font-size: 3.5em;
+            margin-bottom: 15px;
+            display: inline-block;
+            animation: float 3s ease-in-out infinite;
+        }
+
+        @keyframes float {
+
+            0%,
+            100% {
+                transform: translateY(0px);
+            }
+
+            50% {
+                transform: translateY(-10px);
+            }
+        }
+
+        .header h1 {
+            font-size: 2.8em;
+            margin-bottom: 15px;
+            font-weight: 700;
+            letter-spacing: -0.5px;
+        }
+
+        .header p {
+            font-size: 1.2em;
+            opacity: 0.95;
+            font-weight: 300;
+        }
+
+        .content {
+            padding: 40px;
+        }
+
+        .upload-section {
+            border: 3px dashed #667eea;
+            border-radius: 20px;
+            padding: 70px 40px;
+            text-align: center;
+            background: linear-gradient(135deg, #f8f9ff 0%, #ffffff 100%);
+            transition: all 0.3s ease;
+            cursor: pointer;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .upload-section::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: linear-gradient(135deg, rgba(102, 126, 234, 0.05) 0%, rgba(118, 75, 162, 0.05) 100%);
+            opacity: 0;
+            transition: opacity 0.3s;
+        }
+
+        .upload-section:hover {
+            border-color: #764ba2;
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(102, 126, 234, 0.2);
+        }
+
+        .upload-section:hover::before {
+            opacity: 1;
+        }
+
+        .upload-section.dragover {
+            background: linear-gradient(135deg, #e8ebff 0%, #f0f2ff 100%);
+            border-color: #764ba2;
+            transform: scale(1.02);
+        }
+
+        .upload-icon {
+            font-size: 5em;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            margin-bottom: 25px;
+            display: inline-block;
+            animation: pulse 2s ease-in-out infinite;
+        }
+
+        @keyframes pulse {
+
+            0%,
+            100% {
+                transform: scale(1);
+            }
+
+            50% {
+                transform: scale(1.05);
+            }
+        }
+
+        .upload-text {
+            font-size: 1.4em;
+            color: #333;
+            margin-bottom: 12px;
+            font-weight: 600;
+        }
+
+        .upload-hint {
+            color: #666;
+            font-size: 1em;
+            line-height: 1.6;
+        }
+
+        .file-info {
+            margin-top: 20px;
+            padding: 15px;
+            background: #e8f5e9;
+            border-radius: 10px;
+            display: none;
+        }
+
+        .file-info.active {
+            display: block;
+        }
+
+        #fileInput {
+            display: none;
+        }
+
+        .btn {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            padding: 16px 45px;
+            border-radius: 50px;
+            font-size: 1.15em;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 15px rgba(102, 126, 234, 0.4);
+            position: relative;
+            overflow: hidden;
+            margin-top: 20px;
+            display: inline-block;
+        }
+
+        .btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 25px rgba(102, 126, 234, 0.4);
+        }
+
+        .btn:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+        }
+
+        .loading {
+            display: none;
+            text-align: center;
+            padding: 40px;
+        }
+
+        .spinner {
+            border: 5px solid #f3f3f3;
+            border-top: 5px solid #667eea;
+            border-radius: 50%;
+            width: 60px;
+            height: 60px;
+            animation: spin 1s linear infinite;
+            margin: 0 auto 20px;
+        }
+
+        @keyframes spin {
+            0% {
+                transform: rotate(0deg);
+            }
+
+            100% {
+                transform: rotate(360deg);
+            }
+        }
+
+        .results {
+            display: none;
+            margin-top: 40px;
+        }
+
+        .result-card {
+            background: #f8f9ff;
+            border-radius: 15px;
+            padding: 25px;
+            margin-bottom: 20px;
+            border-left: 5px solid #667eea;
+        }
+
+        .result-card.abnormal {
+            border-left-color: #e74c3c;
+            background: #fff5f5;
+        }
+
+        .result-card.normal {
+            border-left-color: #27ae60;
+            background: #f0fff4;
+        }
+
+        .result-header {
+            font-size: 1.5em;
+            font-weight: bold;
+            margin-bottom: 15px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .status-badge {
+            padding: 8px 20px;
+            border-radius: 50px;
+            font-size: 0.9em;
+            font-weight: bold;
+        }
+
+        .status-badge.abnormal {
+            background: #e74c3c;
+            color: white;
+        }
+
+        .status-badge.normal {
+            background: #27ae60;
+            color: white;
+        }
+
+        .result-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 20px;
+            margin-top: 20px;
+        }
+
+        .metric {
+            background: white;
+            padding: 15px;
+            border-radius: 10px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+        }
+
+        .metric-label {
+            color: #666;
+            font-size: 0.9em;
+            margin-bottom: 5px;
+        }
+
+        .metric-value {
+            font-size: 1.5em;
+            font-weight: bold;
+            color: #333;
+        }
+
+        .image-preview {
+            margin-top: 20px;
+            text-align: center;
+        }
+
+        .image-preview img {
+            max-width: 100%;
+            border-radius: 10px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+        }
+
+        .error {
+            background: #fff5f5;
+            border: 2px solid #e74c3c;
+            border-radius: 15px;
+            padding: 25px;
+            margin-top: 20px;
+            display: none;
+        }
+
+        .error-icon {
+            font-size: 3em;
+            color: #e74c3c;
+            margin-bottom: 10px;
+        }
+
+        .error-title {
+            font-size: 1.5em;
+            font-weight: bold;
+            color: #e74c3c;
+            margin-bottom: 10px;
+        }
+
+        .detection-list {
+            margin-top: 15px;
+        }
+
+        .detection-item {
+            background: white;
+            padding: 15px;
+            border-radius: 8px;
+            margin-bottom: 10px;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+        }
+
+        .detection-item strong {
+            color: #e74c3c;
+        }
+
+        .footer {
+            background: #f8f9ff;
+            padding: 30px;
+            text-align: center;
+            border-top: 1px solid #e0e0e0;
+            margin-top: 40px;
+        }
+
+        .footer-content {
+            max-width: 800px;
+            margin: 0 auto;
+        }
+
+        .footer p {
+            color: #666;
+            font-size: 0.9em;
+            line-height: 1.8;
+            margin-bottom: 15px;
+        }
+
+        .footer-warning {
+            background: #fff3cd;
+            border: 1px solid #ffc107;
+            border-radius: 10px;
+            padding: 15px;
+            margin: 20px auto;
+            max-width: 700px;
+        }
+
+        .footer-warning strong {
+            color: #856404;
+        }
+
+        .footer-links {
+            margin-top: 20px;
+            padding-top: 20px;
+            border-top: 1px solid #e0e0e0;
+        }
+
+        .footer-links a {
+            color: #667eea;
+            text-decoration: none;
+            margin: 0 15px;
+            transition: color 0.3s;
+        }
+
+        .footer-links a:hover {
+            color: #764ba2;
+            text-decoration: underline;
+        }
+
+        .info-box {
+            background: #fff9e6;
+            border-left: 4px solid #f39c12;
+            padding: 15px;
+            border-radius: 8px;
+            margin-top: 20px;
+        }
+
+        .info-box h3 {
+            color: #f39c12;
+            margin-bottom: 10px;
+        }
+
+        .new-scan-btn {
+            margin-top: 30px;
+            text-align: center;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="container">
+        <div class="header">
+            <div class="header-content">
+                <div class="header-icon">🏥</div>
+                <h1>Spinal Injury Detection System</h1>
+                <p>AI-Powered Medical Image Analysis for Spine X-rays</p>
+            </div>
+        </div>
+
+        <div class="content">
+            <!-- Upload Section -->
+            <div class="upload-section" id="uploadSection">
+                <div class="upload-icon">📁</div>
+                <div class="upload-text">Drop DICOM file here or click to browse</div>
+                <div class="upload-hint">Supported format: .dcm, .dicom (Max 16MB)</div>
+                <input type="file" id="fileInput" accept=".dcm,.dicom">
+                <button class="btn" id="uploadBtn" style="display: none;">Analyze Scan</button>
+            </div>
+
+            <!-- Loading Indicator -->
+            <div class="loading" id="loadingSection">
+                <div class="spinner"></div>
+                <p>Analyzing medical image...</p>
+                <p style="color: #666; font-size: 0.9em; margin-top: 10px;">This may take a few moments</p>
+            </div>
+
+            <!-- Error Display -->
+            <div class="error" id="errorSection">
+                <div style="text-align: center;">
+                    <div class="error-icon">⚠️</div>
+                    <div class="error-title">Upload Error</div>
+                    <p id="errorMessage"></p>
+                </div>
+            </div>
+
+            <!-- Results Section -->
+            <div class="results" id="resultsSection">
+                <!-- Classification Result -->
+                <div class="result-card" id="classificationCard">
+                    <div class="result-header">
+                        <span>Classification Result</span>
+                        <span class="status-badge" id="statusBadge"></span>
+                    </div>
+                    <div class="result-grid">
+                        <div class="metric">
+                            <div class="metric-label">Ensemble Score</div>
+                            <div class="metric-value" id="ensembleScore">-</div>
+                        </div>
+                        <div class="metric">
+                            <div class="metric-label">Confidence</div>
+                            <div class="metric-value" id="confidence">-</div>
+                        </div>
+                        <div class="metric">
+                            <div class="metric-label">DenseNet121</div>
+                            <div class="metric-value" id="densenet">-</div>
+                        </div>
+                        <div class="metric">
+                            <div class="metric-label">ResNet50</div>
+                            <div class="metric-value" id="resnet">-</div>
+                        </div>
+                        <div class="metric">
+                            <div class="metric-label">EfficientNetV2</div>
+                            <div class="metric-value" id="efficientnet">-</div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Detection Results -->
+                <div class="result-card" id="detectionCard" style="display: none;">
+                    <div class="result-header">
+                        <span>🎯 Lesion Detection Results</span>
+                    </div>
+                    <p><strong>Detected Abnormalities:</strong> <span id="numDetections">0</span></p>
+                    <div class="detection-list" id="detectionList"></div>
+                    <div class="image-preview">
+                        <h3>Annotated Image</h3>
+                        <img id="annotatedImage" src="" alt="Annotated scan">
+                    </div>
+                </div>
+
+                <!-- Original Image Preview -->
+                <div class="result-card">
+                    <div class="result-header">Original Scan</div>
+                    <div class="image-preview">
+                        <img id="previewImage" src="" alt="Original scan">
+                    </div>
+                    <div class="result-grid" style="margin-top: 20px;">
+                        <div class="metric">
+                            <div class="metric-label">Patient ID</div>
+                            <div class="metric-value" style="font-size: 1.2em;" id="patientId">-</div>
+                        </div>
+                        <div class="metric">
+                            <div class="metric-label">Study Date</div>
+                            <div class="metric-value" style="font-size: 1.2em;" id="studyDate">-</div>
+                        </div>
+                        <div class="metric">
+                            <div class="metric-label">Modality</div>
+                            <div class="metric-value" style="font-size: 1.2em;" id="modality">-</div>
+                        </div>
+                        <div class="metric">
+                            <div class="metric-label">Image Size</div>
+                            <div class="metric-value" style="font-size: 1.2em;" id="imageSize">-</div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Info Box -->
+                <div class="info-box">
+                    <h3>⚕️ Important Medical Notice</h3>
+                    <p>This AI analysis is for research purposes only and should not replace professional medical
+                        diagnosis. Please consult with a qualified radiologist or physician for medical advice.</p>
+                </div>
+
+                <!-- New Scan Button -->
+                <div class="new-scan-btn">
+                    <button class="btn" id="newScanBtn">Analyze Another Scan</button>
+                </div>
+            </div>
+
+            <!-- Footer -->
+            <div class="footer">
+                <div class="footer-content">
+                    <p><strong>Spinal Injury Detection System v1.0</strong></p>
+                    <div class="footer-warning">
+                        <strong>⚕️ Medical Disclaimer:</strong> This AI-powered system is designed for research and
+                        educational purposes only. It should not be used as a substitute for professional medical
+                        diagnosis, advice, or treatment. Always consult qualified healthcare professionals for medical
+                        decisions.
+                    </div>
+                    <p>
+                        <strong>Technology:</strong> Ensemble CNN Classification (DenseNet121, ResNet50,
+                        EfficientNetV2-S) + YOLO11 Object Detection<br>
+                        <strong>Performance:</strong> 91.03% AUROC | 83.09% F1-Score on VinDr-SpineXR Dataset
+                    </p>
+                    <div class="footer-links">
+                        <a href="https://github.com/pronad1/Deploy-Model" target="_blank">📦 GitHub</a>
+                        <a href="#" onclick="window.location.href='/health'">🔧 System Health</a>
+                        <a href="https://vindr.ai/datasets/spinexr" target="_blank">📊 Dataset Info</a>
+                    </div>
+                    <p style="margin-top: 20px; font-size: 0.85em; color: #999;">
+                        © 2026 Spinal Injury Detection System | Powered by PyTorch & Flask
+                    </p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const uploadSection = document.getElementById('uploadSection');
+        const fileInput = document.getElementById('fileInput');
+        const uploadBtn = document.getElementById('uploadBtn');
+        const loadingSection = document.getElementById('loadingSection');
+        const errorSection = document.getElementById('errorSection');
+        const resultsSection = document.getElementById('resultsSection');
+        const newScanBtn = document.getElementById('newScanBtn');
+
+        let selectedFile = null;
+
+        // Click to upload
+        uploadSection.addEventListener('click', () => fileInput.click());
+
+        // Drag and drop
+        uploadSection.addEventListener('dragover', (e) => {
+            e.preventDefault();
+            uploadSection.classList.add('dragover');
+        });
+
+        uploadSection.addEventListener('dragleave', () => {
+            uploadSection.classList.remove('dragover');
+        });
+
+        uploadSection.addEventListener('drop', (e) => {
+            e.preventDefault();
+            uploadSection.classList.remove('dragover');
+            const files = e.dataTransfer.files;
+            if (files.length > 0) {
+                handleFileSelect(files[0]);
+            }
+        });
+
+        // File input change
+        fileInput.addEventListener('change', (e) => {
+            if (e.target.files.length > 0) {
+                handleFileSelect(e.target.files[0]);
+            }
+        });
+
+        function handleFileSelect(file) {
+            selectedFile = file;
+            const fileName = file.name;
+            const fileSize = (file.size / 1024 / 1024).toFixed(2);
+
+            // Update upload section to show selected file
+            const uploadText = uploadSection.querySelector('.upload-text');
+            uploadText.innerHTML = `<strong>✓ File Selected</strong><br><span style="font-size: 0.9em; color: #667eea;">${fileName}</span><br><span style="font-size: 0.8em; color: #999;">Size: ${fileSize} MB</span>`;
+            uploadBtn.style.display = 'inline-block';
+
+            // Prevent file input from opening again
+            fileInput.value = '';
+        }
+
+        // Upload and analyze
+        uploadBtn.addEventListener('click', async (e) => {
+            e.preventDefault();
+            e.stopPropagation();
+
+            if (!selectedFile) return;
+
+            const formData = new FormData();
+            formData.append('file', selectedFile);
+
+            // Show loading
+            uploadSection.style.display = 'none';
+            errorSection.style.display = 'none';
+            resultsSection.style.display = 'none';
+            loadingSection.style.display = 'block';
+            uploadBtn.style.display = 'none';
+
+            try {
+                const response = await fetch('/upload', {
+                    method: 'POST',
+                    body: formData
+                });
+
+                const data = await response.json();
+
+                if (!response.ok) {
+                    throw new Error(data.message || data.error || 'Upload failed');
+                }
+
+                displayResults(data);
+
+            } catch (error) {
+                displayError(error.message);
+            }
+        });
+
+        function displayResults(data) {
+            loadingSection.style.display = 'none';
+            resultsSection.style.display = 'block';
+
+            // Classification
+            const classification = data.classification;
+            const isAbnormal = classification.is_abnormal;
+
+            const classificationCard = document.getElementById('classificationCard');
+            classificationCard.className = 'result-card ' + (isAbnormal ? 'abnormal' : 'normal');
+
+            const statusBadge = document.getElementById('statusBadge');
+            statusBadge.className = 'status-badge ' + (isAbnormal ? 'abnormal' : 'normal');
+            statusBadge.textContent = isAbnormal ? '⚠️ ABNORMAL' : '✓ NORMAL';
+
+            document.getElementById('ensembleScore').textContent =
+                (classification.ensemble_score * 100).toFixed(2) + '%';
+            document.getElementById('confidence').textContent =
+                classification.confidence.toFixed(2) + '%';
+
+            // Individual model predictions
+            const predictions = classification.individual_predictions;
+            document.getElementById('densenet').textContent =
+                predictions.densenet121 ? (predictions.densenet121 * 100).toFixed(2) + '%' : 'N/A';
+            document.getElementById('resnet').textContent =
+                predictions.resnet50 ? (predictions.resnet50 * 100).toFixed(2) + '%' : 'N/A';
+            document.getElementById('efficientnet').textContent =
+                predictions.efficientnet ? (predictions.efficientnet * 100).toFixed(2) + '%' : 'N/A';
+
+            // Detection results
+            if (data.detection && data.detection.num_detections > 0) {
+                document.getElementById('detectionCard').style.display = 'block';
+                document.getElementById('numDetections').textContent = data.detection.num_detections;
+
+                const detectionList = document.getElementById('detectionList');
+                detectionList.innerHTML = '';
+
+                data.detection.detections.forEach((det, idx) => {
+                    const item = document.createElement('div');
+                    item.className = 'detection-item';
+                    item.innerHTML = `
+                        <strong>Lesion ${idx + 1}:</strong> ${det.class}<br>
+                        <strong>Confidence:</strong> ${(det.confidence * 100).toFixed(2)}%<br>
+                        <strong>Location:</strong> [${det.bbox.map(v => v.toFixed(0)).join(', ')}]
+                    `;
+                    detectionList.appendChild(item);
+                });
+
+                document.getElementById('annotatedImage').src =
+                    'data:image/png;base64,' + data.detection.annotated_image;
+            }
+
+            // Preview image
+            document.getElementById('previewImage').src =
+                'data:image/png;base64,' + data.preview_image;
+
+            // Metadata
+            document.getElementById('patientId').textContent = data.metadata.patient_id;
+            document.getElementById('studyDate').textContent = data.metadata.study_date;
+            document.getElementById('modality').textContent = data.metadata.modality;
+            document.getElementById('imageSize').textContent = data.metadata.image_size;
+        }
+
+        function displayError(message) {
+            loadingSection.style.display = 'none';
+            errorSection.style.display = 'block';
+
+            // Check if it's a non-spine DICOM error
+            const errorMsg = document.getElementById('errorMessage');
+            if (message.includes('spine') || message.includes('SPINE') || message.includes('appears to be')) {
+                errorMsg.innerHTML = `<strong>❌ Incorrect Image Type</strong><br><br>${message}<br><br><em style="font-size: 0.9em; color: #666;">This system is specifically designed for spine X-ray and MRI analysis only.</em>`;
+            } else {
+                errorMsg.textContent = message;
+            }
+
+            // Add retry button
+            setTimeout(() => {
+                const retryBtn = document.createElement('button');
+                retryBtn.className = 'btn';
+                retryBtn.textContent = '🔄 Upload Another File';
+                retryBtn.style.marginTop = '20px';
+                retryBtn.onclick = resetUpload;
+
+                if (!errorSection.querySelector('.btn')) {
+                    errorSection.querySelector('div').appendChild(retryBtn);
+                }
+            }, 100);
+        }
+
+        function resetUpload() {
+            // Reset UI
+            selectedFile = null;
+            errorSection.style.display = 'none';
+            resultsSection.style.display = 'none';
+            loadingSection.style.display = 'none';
+            uploadSection.style.display = 'block';
+            uploadBtn.style.display = 'none';
+
+            // Reset upload text
+            const uploadText = uploadSection.querySelector('.upload-text');
+            uploadText.innerHTML = 'Drop your DICOM file here or click to browse';
+
+            // Clear file input
+            fileInput.value = '';
+        }
+
+        // New scan button
+        newScanBtn.addEventListener('click', () => {
+            location.reload();
+        });
+    </script>
+</body>
+
+</html>

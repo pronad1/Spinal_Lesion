@@ -1,0 +1,21 @@
+{
+  "settings_version": "0.0.6",
+  "datasets_dir": "D:\\Languages\\Deploy-Model\\datasets",
+  "weights_dir": "weights",
+  "runs_dir": "runs",
+  "uuid": "447871fe2098251adfe60b1fbb5c788bfd65f0aa2a28d7a7313acc796961440c",
+  "sync": true,
+  "api_key": "",
+  "openai_api_key": "",
+  "clearml": true,
+  "comet": true,
+  "dvc": true,
+  "hub": true,
+  "mlflow": true,
+  "neptune": true,
+  "raytune": true,
+  "tensorboard": false,
+  "wandb": false,
+  "vscode_msg": true,
+  "openvino_msg": true
+}
