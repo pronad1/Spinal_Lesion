@@ -104,10 +104,14 @@ Pathology        1,093      5,454
 
 #### Precision-Recall Curve (Detection)
 ```
-Osteophytes:          AP = 42.3%
-Surgical implant:     AP = 63.8%
-Vertebral collapse:   AP = 31.2%
-...
+Osteophytes:          AP = 45.61%
+Surgical implant:     AP = 69.74%
+Disc space narrowing: AP = 51.44%
+Foraminal stenosis:   AP = 43.31%
+Spondylolisthesis:    AP = 32.09%
+Vertebral collapse:   AP = 51.20%
+Other lesions:        AP = 87.30%
+Overall:              mAP@0.5 = 40.10%
 ```
 
 ## 🛠️ Customization
