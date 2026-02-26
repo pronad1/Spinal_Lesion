@@ -1,6 +1,6 @@
 # Repository Structure Overview
 
-**Last Updated**: February 9, 2026  
+**Last Updated**: February 26, 2026  
 **Purpose**: MICCAI 2026 Conference Submission - VinDr-SpineXR Lesion Detection
 
 ## 📁 Complete File Tree
