@@ -141,18 +141,32 @@ p_ensemble = 0.42 × p_densenet + 0.32 × p_efficientnet + 0.26 × p_resnet
 
 #### Class Imbalance Handling
 
-**Critical for 46.9:1 imbalance ratio**:
+**Multi-Level Strategy for Extreme 46.9:1 Imbalance**
 
-1. **Copy-Paste Augmentation**: α=0.2 probability for classes <5% frequency
-   - Randomly pastes minority class instances (vertebral collapse, other lesions)
-   
-2. **Focal Loss**: γ=2.0 automatically focuses on hard examples
+**1. Structural Approach (Cascaded Framework)**
 
-3. **Class-Balanced Sampling**: Probability ∝ 1/√f_c
+Architectural decoupling at the system level:
+- **Binary Triage**: DERNet ensemble performs high-sensitivity filtering (84.91% sensitivity) to eliminate normal cases first
+- **Dynamic Routing**: Only pathological candidates are forwarded to YOLO11-l detector
+- **Impact**: Structural isolation of the diagnostic pathway neutralizes false-positive amplification and explicitly mitigates severe class imbalance before detection
 
-4. **Multi-Scale Training**: {480, 576, 640, 704, 768}px
+**2. Algorithmic Approach (Data and Loss Optimization)**
 
-5. **Mosaic Augmentation**: Combines 4 images (p=0.5)
+Training-level modifications to ensure rare pathologies are not ignored:
+- **Copy-Paste Augmentation**: α=0.2 probability reinforces minority lesions (vertebral collapse: 1.75%, other lesions: 3.1%)
+  - Randomly pastes underrepresented instances into training images
+- **Focal Loss Tuning**: $\gamma=2.0$, $\alpha_t=0.25$ empirically optimized to prioritize minority foreground classes
+  - Down-weights easy majority examples: $(1-p_t)^\gamma \log(p_t)$
+- **Class-Balanced Sampling**: Probability ∝ $1/\sqrt{f_c}$ to counteract frequency bias
+
+**3. Architectural Approach (YOLO11-l Design)**
+
+Network architecture designed to preserve weak signals from rare lesions:
+- **PANet Feature Fusion**: Bidirectional feature flow in the neck ensures fine-grained signals from rare pathologies are preserved across deep layers
+- **Multi-Scale Detection Heads**: Three spatial resolutions (80×80, 40×40, 20×20) optimize bounding box precision for minute lesions occupying <1% of field of view
+- **Multi-Scale Training**: {480, 576, 640, 704, 768}px input sizes capture lesions across all scales
+
+**Result**: +33.3% AP improvement on rarest class (vertebral collapse), +15,482% on other lesions
 
 #### Training Configuration
 
@@ -174,6 +188,49 @@ NMS: IoU threshold=0.65, confidence=0.25
 **Training Time**: ~7 hours (RTX 3050), ~3 hours (RTX 3090)
 
 **Final YOLO11-l Result**: **40.10% mAP@0.5** (+19.5% over 33.56% baseline)
+
+---
+
+## Model Explainability
+
+**Multi-Modal Explainability for Clinical Trust**
+
+The clinical relevance and diagnostic reliability of the framework are validated through three complementary explainability approaches:
+
+### 1. LIME (Local Interpretable Model-Agnostic Explanations)
+
+**Purpose**: Validate that DERNet ensemble focuses on authentic anatomical landmarks rather than background artifacts
+
+**Implementation**:
+- Local importance heatmaps generated for each prediction
+- Superpixel segmentation to identify diagnostically relevant regions
+- Perturbation-based attribution to quantify feature importance
+
+**Key Finding**: Predictive weight is directly ascribed to diagnostic areas (vertebral boundaries, disc spaces, foraminal regions), confirming the model does not rely on spurious correlations or dataset biases
+
+### 2. Grad-CAM (Gradient-weighted Class Activation Mapping)
+
+**Purpose**: Confirm transparency of decision-making and validate localization accuracy
+
+**Implementation**:
+- Grad-CAM applied to final convolutional layers of DenseNet-121, EfficientNetV2-S, ResNet-50
+- Heatmaps generated for both "pathological" and "normal" classifications
+- Gradient backpropagation to identify discriminative regions: $\alpha_k^c = \frac{1}{Z}\sum_i \sum_j \frac{\partial y^c}{\partial A_{ij}^k}$
+
+**Key Finding**: Heatmaps show consistent localization with pathology lesions, providing solid foundation for high-sensitivity (84.91%) triage. Attention correctly focuses on osteophytes, vertebral collapse, and disc space narrowing
+
+### 3. Qualitative Detection Visualization
+
+**Purpose**: Validate YOLO11-l boundary precision and microstructural deformation detection
+
+**Implementation**:
+- High-resolution bounding box overlays with confidence scores
+- Mask generation for detected lesions
+- Boundary detail preservation via multi-scale feature pyramids (P3-P7)
+
+**Key Finding**: Framework achieves high-resolution boundaries across complex spinal anatomies, isolating microstructural deformations by preserving high-frequency spatial gradients that are degraded by baseline detectors
+
+**Clinical Validation**: Multi-modal explainability confirms the framework's predictions are grounded in anatomically relevant features, supporting clinical adoption and radiologist trust
 
 ---
 
