@@ -1,6 +1,6 @@
 MIT License
 
-Copyright (c) 2026 VinDr-SpineXR Project Contributors
+Copyright (c) 2026 Prosenjit Mondol
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal
@@ -19,17 +19,3 @@ AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
 LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
-
----
-
-
-DATASET LICENSE:
-
-The VinDr-SpineXR dataset is subject to the PhysioNet Credentialed Health 
-Data License 1.5.0. Users must:
-1. Complete CITI training for human subjects research
-2. Request and obtain access from PhysioNet
-3. Cite the original dataset paper in any publications
-4. Not redistribute the dataset
-
-See: https://physionet.org/content/vindr-spinexr/
