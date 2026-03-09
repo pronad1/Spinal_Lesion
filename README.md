@@ -363,5 +363,4 @@ The clinical relevance and diagnostic reliability of the framework are validated
 AND COMPUTER ASSISTED INTERVENTION - MICCAI 2026 Submission**
 
 *Code and trained models will be publicly released upon acceptance*
-
 </div>
