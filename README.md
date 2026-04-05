@@ -354,7 +354,6 @@ The clinical relevance and diagnostic reliability of the framework are validated
 | **{480-768}px (5 scales)** | **40.10%** | **38.3%** | **31.4%** | **59.8%** |
 
 **Finding**: 5-scale training improves detection across all object sizes
-
 ---
 
 <div align="center">
