@@ -358,8 +358,5 @@ The clinical relevance and diagnostic reliability of the framework are validated
 
 <div align="center">
 
-**29th INTERNATIONAL CONFERENCE ON MEDICAL IMAGE COMPUTING
-AND COMPUTER ASSISTED INTERVENTION - MICCAI 2026 Submission**
-
 *Code and trained models will be publicly released upon acceptance*
 </div>
